@@ -1,0 +1,20 @@
+body {
+  background-color: #eeeeef;
+}
+
+h1 {
+  color: #245884;
+}
+
+.question {
+  color: #245884;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.answer {
+  display:none;
+  padding-bottom: 1em;
+  padding-left: 2.2em;
+  padding-top: .5em;
+}

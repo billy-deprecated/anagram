@@ -1,0 +1,170 @@
+<!-- Billy's simple anagram checker -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Anagram Checker</title>
+
+<!-- Load style sheets -->
+<link
+  rel='stylesheet'
+  href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css'
+>
+<link rel='stylesheet' href='layout.css'>
+<!-- Use mobile-aware viewport -->
+<meta
+  name='viewport'
+  content='width=device-width, initial-scale=1, shrink-to-fit=no'
+>
+
+<!-- Javascript libraries here -->
+<script
+  src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'
+>
+</script>
+<script>
+  // all answers start off hidden
+  var isAnswerHidden = {'a1': true, 'a2': true}
+
+  // Button events:
+  // 'Check' button is pressed
+  $(document).on('click', '#check', function(evt) {
+    var string1 = $('#string1').val();
+    var string2 = $('#string2').val();
+
+    $('.result').empty();
+    $('.result').append(getMessage(string1, string2));
+
+    // reset input text box to empty
+    $('#string1').val('');
+    $('#string2').val('');
+    $('#string1').focus(); // keyboard focus on first input
+    // disable check Button (will be re-enabled once user types in new strings)
+    $('#check').prop('disabled', true);
+  });
+
+  // a question is pressed
+  $(document).on('click', '.question', function(evt) {
+    var answerId = $(this)[0].id.replace('q','a');
+    $('#'+answerId).toggle(isAnswerHidden[answerId]);
+    isAnswerHidden[answerId] = !isAnswerHidden[answerId]
+  });
+
+  // Key events:
+  // trigger check if enter pressed
+  $(document).bind('keypress', function(e) {
+    if(e.keyCode==13){
+      $('#check').trigger('click');
+    }
+  });
+
+  // enable check Button if two strings inputted, else disable
+  $(document).on('keyup', function(evt) {
+    if($('#string1').val() && $('#string2').val()) {
+      $('#check').prop('disabled', false);
+    }
+    else {
+      $('#check').prop('disabled', true);
+    }
+  });
+
+  // Helper functions:
+  // returns appropriate message
+  getMessage = function(string1, string2) {
+    message = `<b>${string1}</b> and <b>${string2}</b> `;
+    result = checkAnagram(string1, string2) ?
+      '<font color="green"><b>are</b> anagrams!</font>' :
+      '<font color="red"><b>are not</b> anagrams.</font>'
+    return message + result;
+  }
+
+  // returns true if string1 and string2 are anagrams, false otherwise
+  checkAnagram = function(string1, string2) {
+    string1 = removePunctuation(string1);
+    string2 = removePunctuation(string2);
+    var length = string1.length;
+    if(length != string2.length) {
+      return false;
+    }
+    var frequency1 = {}
+    var frequency2 = {}
+    for(var i = 0; i < length; i++) {
+      var char1 = string1[i]
+      var char2 = string2[i]
+      frequency1[char1] = (char1 || 0) + 1;
+      frequency2[char2] = (char2 || 0) + 1;
+    }
+    if(Object.keys(frequency1).length != Object.keys(frequency2).length) {
+      return false;
+    }
+    for (var key in frequency1) {
+      if(frequency1[key] != frequency2[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // returns lowercase word with no punctuation or spaces
+  removePunctuation = function(word) {
+    return word.toLowerCase().replace(/[ `~!@#$%^&*()-_=+[\]{}|;:'",.<>/?]/g,'');
+  }
+</script>
+</head>
+
+<body>
+<div class='container'>
+  <div class="text-center">
+    <h1>are my strings anagrams?</h1>
+    <br>
+
+    <div class="input-group input-group-lg">
+      <input type="text" class="form-control input-group-lg" placeholder="string 1" id="string1">
+    </div>
+    <br>
+    <div class="input-group input-group-lg">
+      <input type="text" class="form-control" placeholder="string 2" id="string2">
+    </div>
+    <br>
+    <input type='button' class='btn btn-block btn-lg btn-primary' value='check' id ='check' disabled>
+    <br>
+
+    <div class='result h3'>
+    </div>
+    <br>
+  </div>
+
+  <div id='anagramInfo'>
+    <div class='question' id='q1'>
+      what is an anagram?
+    </div>
+    <div class='answer' id='a1'>
+      an <b>anagram</b> is word or phrase formed by rearranging the letters of a different word or phrase
+      <br>
+      <small class='text-muted'>
+        read more on <a href="https://en.wikipedia.org/wiki/Anagram" target="_blank">Wikipedia</a>
+      </small>
+    </div>
+  </div>
+  <br>
+  <div id='codeInfo'>
+    <div class='question' id='q2'>
+      what do I do here?
+    </div>
+    <div class='answer' id='a2'>
+      <b>1.</b> give me any two strings<br>
+      <b>2.</b> press enter or click "check"<br>
+      <b>3.</b> I'll tell you if your two strings are anagrams<br>
+      <small class='text-muted'>
+        I look at letters and numbers but ignore spaces and punctuation
+      </small>
+    </div>
+  </div>
+  <br>
+  <small class='text-muted'>
+    click on a question to show or hide its answer <br><br>
+    made by billy
+  </small>
+</div>
+</body>
+</html>
